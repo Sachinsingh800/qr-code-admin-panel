@@ -18,7 +18,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Refresh, Info, Download, Link, TextFields } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   border: 0,
@@ -65,10 +65,10 @@ const QRTable = () => {
   const [error, setError] = useState(null);
   const [contentTypeFilter, setContentTypeFilter] = useState("all");
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const constructApiUrl = () => {
-    const baseUrl =
-      "http://13.203.219.119:3001/admin/user/qr/textFilter/680c867d5fd7f0106dbb9fe8";
+    const baseUrl = `http://13.203.219.119:3001/admin/user/qr/textFilter/${id}`;
     return contentTypeFilter !== "all"
       ? `${baseUrl}?contentType=${contentTypeFilter}`
       : baseUrl;
