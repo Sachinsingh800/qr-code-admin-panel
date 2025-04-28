@@ -47,7 +47,7 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    Cookies.remove("authToken");
+    Cookies.remove("adminToken");
     navigate("/");
   };
 
