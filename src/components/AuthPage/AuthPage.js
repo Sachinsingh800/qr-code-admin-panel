@@ -28,6 +28,8 @@ import {
   QrCodeScanner,
   Security,
   Palette,
+  Create,
+  Devices,
 } from "@mui/icons-material";
 
 const darkTheme = createTheme({
@@ -169,6 +171,7 @@ const AuthPage = () => {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
+                  width: "500px",
                 }}
               >
                 <Box sx={{ mb: 4 }}>
@@ -176,10 +179,10 @@ const AuthPage = () => {
                     sx={{ fontSize: 40, color: "primary.main", mb: 2 }}
                   />
                   <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
-                    QRScanner+
+                    QRScanner & Generator
                   </Typography>
                   <Typography variant="body1" color="textSecondary">
-                    Premium QR Code Solution for Professionals
+                    Scan, Create, and Manage QR Codes Effortlessly
                   </Typography>
                 </Box>
 
@@ -187,10 +190,10 @@ const AuthPage = () => {
                   <QrCodeScanner sx={{ color: "primary.main" }} />
                   <Box>
                     <Typography variant="subtitle1">
-                      Advanced Scanning
+                      Smart QR Scanning
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Instant recognition with AI-powered technology
+                      Instant scan from images, PDFs, or live camera feed
                     </Typography>
                   </Box>
                 </FeatureItem>
@@ -198,11 +201,9 @@ const AuthPage = () => {
                 <FeatureItem>
                   <Security sx={{ color: "primary.main" }} />
                   <Box>
-                    <Typography variant="subtitle1">
-                      Enterprise Security
-                    </Typography>
+                    <Typography variant="subtitle1">Secure Sharing</Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Military-grade encryption for all your data
+                      Password-protected QR codes with expiration dates
                     </Typography>
                   </Box>
                 </FeatureItem>
@@ -210,9 +211,11 @@ const AuthPage = () => {
                 <FeatureItem>
                   <Palette sx={{ color: "primary.main" }} />
                   <Box>
-                    <Typography variant="subtitle1">Custom Design</Typography>
+                    <Typography variant="subtitle1">
+                      Multi-Format Export
+                    </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Fully customizable QR code templates
+                      Save QR codes as PNG, PDF, or embed in DOC files
                     </Typography>
                   </Box>
                 </FeatureItem>
