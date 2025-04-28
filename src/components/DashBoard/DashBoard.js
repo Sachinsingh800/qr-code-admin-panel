@@ -34,7 +34,7 @@ const Dashboard = () => {
   const [anchorEl, setAnchorEl] = useState(null); // Anchor for popover menu
 
   const menuItems = [
-    { label: "Home", icon: <HomeIcon />, path: "/dashboard/home" },
+    { label: "Home", icon: <HomeIcon />, path: "/dashboard" },
     { label: "Users", icon: <GroupsIcon />, path: "/dashboard/users-table" },
   ];
 

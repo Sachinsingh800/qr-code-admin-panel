@@ -20,6 +20,7 @@ const theme = createTheme({
   },
 });
 
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -28,9 +29,10 @@ function App() {
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/dashboard" element={<Dashboard />}>
+            <Route index element={<Home />} />  {/* Default route */}
             <Route path="profile" element={<ProfilePage />} />
             <Route path="users-table" element={<UsersTable />} />
-            <Route path="home" element={<Home />} />
+            <Route path="home" element={<Home />} />  {/* Keep this for direct navigation */}
             <Route path="analytic/:id" element={<Detail />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth" replace />} />
