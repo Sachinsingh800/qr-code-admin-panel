@@ -17,20 +17,12 @@ import {
   MenuItem,
   Menu,
 } from "@mui/material";
-import ContactsIcon from "@mui/icons-material/Contacts";
-import InfoIcon from "@mui/icons-material/Info";
 import HomeIcon from "@mui/icons-material/Home";
-import SchoolIcon from "@mui/icons-material/School";
-import ChecklistRtlIcon from "@mui/icons-material/ChecklistRtl";
-import BusinessIcon from "@mui/icons-material/Business";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
 import GroupsIcon from "@mui/icons-material/Groups";
-import ShareIcon from "@mui/icons-material/Share";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Logout, Person } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Cookies from "js-cookie";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
 const drawerWidth = 280;
 
@@ -43,7 +35,7 @@ const Dashboard = () => {
 
   const menuItems = [
     { label: "Home", icon: <HomeIcon />, path: "/dashboard/home" },
-    { label: "Users", icon: <SchoolIcon />, path: "/dashboard/users-table" },
+    { label: "Users", icon: <GroupsIcon />, path: "/dashboard/users-table" },
   ];
 
   const handleLogout = () => {

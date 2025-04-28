@@ -1,4 +1,4 @@
-// AuthPage.jsx
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -138,22 +138,16 @@ const AuthPage = () => {
       <CssBaseline />
       <Container
         maxWidth="lg"
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          py: 4, // Added padding to prevent overflow
-        }}
+        sx={{ minHeight: "100vh", display: "flex", alignItems: "center" }}
       >
         <Paper
           elevation={24}
           sx={{
             display: "flex",
             width: "100%",
-            minHeight: isMobile ? "auto" : "600px", // Fixed minimum height
             borderRadius: 4,
             overflow: "hidden",
-            background: "rgba(0, 30, 60, 0.9)",
+            background: "linear-gradient(to right, #001e3c 0%, #0a1929 100%)",
           }}
         >
           <Grid container>
@@ -226,102 +220,88 @@ const AuthPage = () => {
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  flex: 1, // Add this
+                  justifyContent: "center",
                   background: "rgba(0, 30, 60, 0.9)",
-                  minHeight: isMobile ? "auto" : "600px",
-                  width: "650px",
-                  boxShadow: "none",
+                  backdropFilter: "blur(20px)",
                 }}
               >
-                <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
-                    {isLogin ? "Welcome Back" : "Get Started"}
-                  </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
+                  {isLogin ? "Welcome Back" : "Get Started"}
+                </Typography>
 
-                  {error && (
-                    <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
-                      {error}
-                    </Alert>
-                  )}
+                {error && (
+                  <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                    {error}
+                  </Alert>
+                )}
 
-                  <Box
-                    component="form"
-                    onSubmit={handleSubmit}
+                <Box component="form" onSubmit={handleSubmit}>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Email"
+                    variant="outlined"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    sx={{ mb: 2 }}
+                    InputLabelProps={{ sx: { color: "text.secondary" } }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                            sx={{ color: "text.secondary" }}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    InputLabelProps={{ sx: { color: "text.secondary" } }}
+                  />
+
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    type="submit"
+                    disabled={loading}
                     sx={{
-                      boxShadow: "none",
+                      mt: 3,
+                      py: 1.5,
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 8px 24px rgba(0, 255, 136, 0.2)",
+                      },
                     }}
                   >
-                    <TextField
-                      fullWidth
-                      margin="normal"
-                      label="Email"
-                      variant="outlined"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      sx={{ mb: 2 }}
-                      InputLabelProps={{ sx: { color: "text.secondary" } }}
-                    />
-
-                    <TextField
-                      fullWidth
-                      margin="normal"
-                      label="Password"
-                      variant="outlined"
-                      type={showPassword ? "text" : "password"}
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => setShowPassword(!showPassword)}
-                              edge="end"
-                              sx={{ color: "text.secondary" }}
-                            >
-                              {showPassword ? (
-                                <VisibilityOff />
-                              ) : (
-                                <Visibility />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      InputLabelProps={{ sx: { color: "text.secondary" } }}
-                    />
-
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      size="large"
-                      type="submit"
-                      disabled={loading}
-                      sx={{
-                        mt: 3,
-                        py: 1.5,
-                        "&:hover": {
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 8px 24px rgba(0, 255, 136, 0.2)",
-                        },
-                      }}
-                    >
-                      {loading ? (
-                        <CircularProgress
-                          size={24}
-                          sx={{ color: "text.primary" }}
-                        />
-                      ) : isLogin ? (
-                        "Sign In"
-                      ) : (
-                        "Create Account"
-                      )}
-                    </Button>
-                  </Box>
+                    {loading ? (
+                      <CircularProgress
+                        size={24}
+                        sx={{ color: "text.primary" }}
+                      />
+                    ) : isLogin ? (
+                      "Sign In"
+                    ) : (
+                      "Create Account"
+                    )}
+                  </Button>
                 </Box>
 
                 <Box sx={{ mt: 3, textAlign: "center" }}>
