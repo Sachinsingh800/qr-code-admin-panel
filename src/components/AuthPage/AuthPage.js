@@ -1,4 +1,3 @@
-// AuthPage.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -28,8 +27,6 @@ import {
   QrCodeScanner,
   Security,
   Palette,
-  Create,
-  Devices,
 } from "@mui/icons-material";
 
 const darkTheme = createTheme({
@@ -76,6 +73,15 @@ const darkTheme = createTheme({
       },
     },
   },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
 });
 
 const FeatureItem = styled(Box)(({ theme }) => ({
@@ -86,6 +92,10 @@ const FeatureItem = styled(Box)(({ theme }) => ({
   borderRadius: "8px",
   background: "rgba(255, 255, 255, 0.05)",
   marginBottom: theme.spacing(2),
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
 }));
 
 const AuthPage = () => {
@@ -95,7 +105,7 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width:900px)");
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const validateForm = () => {
     const { email, password } = formData;
@@ -144,7 +154,8 @@ const AuthPage = () => {
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
-          py: 4, // Added padding to prevent overflow
+          py: { xs: 2, md: 4 },
+          px: { xs: 1, sm: 2 },
         }}
       >
         <Paper
@@ -152,8 +163,8 @@ const AuthPage = () => {
           sx={{
             display: "flex",
             width: "100%",
-            minHeight: isMobile ? "auto" : "600px", // Fixed minimum height
-            borderRadius: 4,
+            minHeight: { xs: "auto", md: "600px" },
+            borderRadius: { xs: 2, md: 4 },
             overflow: "hidden",
             background: "rgba(0, 30, 60, 0.9)",
           }}
@@ -167,93 +178,123 @@ const AuthPage = () => {
                 sx={{
                   background:
                     "linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 30, 60, 0.8) 100%)",
-                  p: 6,
+                  p: { xs: 2, md: 4 },
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  width: "500px",
+                  overflow: "hidden",
                 }}
               >
-                <Box sx={{ mb: 4 }}>
+                <Box sx={{ mb: { xs: 2, md: 4 } }}>
                   <QrCodeScanner
-                    sx={{ fontSize: 40, color: "primary.main", mb: 2 }}
+                    sx={{
+                      fontSize: { xs: 32, md: 40 },
+                      color: "primary.main",
+                      mb: 2,
+                    }}
                   />
-                  <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+                      mb: 1,
+                    }}
+                  >
                     QRScanner & Generator
                   </Typography>
-                  <Typography variant="body1" color="textSecondary">
+                  <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    sx={{
+                      fontSize: { xs: "0.875rem", md: "1rem" },
+                    }}
+                  >
                     Scan, Create, and Manage QR Codes Effortlessly
                   </Typography>
                 </Box>
 
-                <FeatureItem>
-                  <QrCodeScanner sx={{ color: "primary.main" }} />
-                  <Box>
-                    <Typography variant="subtitle1">
-                      Smart QR Scanning
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Instant scan from images, PDFs, or live camera feed
-                    </Typography>
-                  </Box>
-                </FeatureItem>
-
-                <FeatureItem>
-                  <Security sx={{ color: "primary.main" }} />
-                  <Box>
-                    <Typography variant="subtitle1">Secure Sharing</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Password-protected QR codes with expiration dates
-                    </Typography>
-                  </Box>
-                </FeatureItem>
-
-                <FeatureItem>
-                  <Palette sx={{ color: "primary.main" }} />
-                  <Box>
-                    <Typography variant="subtitle1">
-                      Multi-Format Export
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Save QR codes as PNG, PDF, or embed in DOC files
-                    </Typography>
-                  </Box>
-                </FeatureItem>
+                {[
+                  {
+                    icon: <QrCodeScanner sx={{ color: "primary.main" }} />,
+                    title: "Smart QR Scanning",
+                    text: "Instant scan from images, PDFs, or live camera feed",
+                  },
+                  {
+                    icon: <Security sx={{ color: "primary.main" }} />,
+                    title: "Secure Sharing",
+                    text: "Password-protected QR codes with expiration dates",
+                  },
+                  {
+                    icon: <Palette sx={{ color: "primary.main" }} />,
+                    title: "Multi-Format Export",
+                    text: "Save QR codes as PNG, PDF, or embed in DOC files",
+                  },
+                ].map((feature, index) => (
+                  <FeatureItem key={index}>
+                    {feature.icon}
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontSize: { xs: "0.875rem", md: "1rem" },
+                        }}
+                      >
+                        {feature.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{
+                          fontSize: { xs: "0.75rem", md: "0.875rem" },
+                        }}
+                      >
+                        {feature.text}
+                      </Typography>
+                    </Box>
+                  </FeatureItem>
+                ))}
               </Grid>
             )}
 
             <Grid item xs={12} md={6}>
               <Box
                 sx={{
-                  p: 6,
+                  p: { xs: 3, md: 6 },
                   height: "100%",
+                  width: "100%",
                   display: "flex",
                   flexDirection: "column",
-                  flex: 1, // Add this
+                  justifyContent: "center",
                   background: "rgba(0, 30, 60, 0.9)",
-                  minHeight: isMobile ? "auto" : "600px",
-                  width: "650px",
-                  boxShadow: "none",
                 }}
               >
-                <Box>
-                  <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
+                <Box sx={{ width: "100%", maxWidth: 500, mx: "auto" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 3,
+                      fontSize: { xs: "1.5rem", md: "2rem" },
+                    }}
+                  >
                     {isLogin ? "Welcome Back" : "Get Started"}
                   </Typography>
 
                   {error && (
-                    <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                    <Alert
+                      severity="error"
+                      sx={{
+                        mb: 3,
+                        borderRadius: 2,
+                        fontSize: { xs: "0.875rem", md: "1rem" },
+                      }}
+                    >
                       {error}
                     </Alert>
                   )}
 
-                  <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    sx={{
-                      boxShadow: "none",
-                    }}
-                  >
+                  <Box component="form" onSubmit={handleSubmit}>
                     <TextField
                       fullWidth
                       margin="normal"
@@ -306,9 +347,10 @@ const AuthPage = () => {
                       disabled={loading}
                       sx={{
                         mt: 3,
-                        py: 1.5,
+                        py: { xs: 1.25, md: 1.5 },
+                        fontSize: { xs: "0.875rem", md: "1rem" },
                         "&:hover": {
-                          transform: "translateY(-2px)",
+                          transform: { xs: "none", md: "translateY(-2px)" },
                           boxShadow: "0 8px 24px rgba(0, 255, 136, 0.2)",
                         },
                       }}
@@ -325,22 +367,23 @@ const AuthPage = () => {
                       )}
                     </Button>
                   </Box>
-                </Box>
 
-                <Box sx={{ mt: 3, textAlign: "center" }}>
-                  <MuiLink
-                    component="button"
-                    type="button"
-                    onClick={() => setIsLogin(!isLogin)}
-                    sx={{
-                      color: "text.secondary",
-                      "&:hover": { color: "primary.main" },
-                    }}
-                  >
-                    {isLogin
-                      ? "Don't have an account? Register now"
-                      : "Already registered? Sign in here"}
-                  </MuiLink>
+                  <Box sx={{ mt: 3, textAlign: "center" }}>
+                    <MuiLink
+                      component="button"
+                      type="button"
+                      onClick={() => setIsLogin(!isLogin)}
+                      sx={{
+                        color: "text.secondary",
+                        fontSize: { xs: "0.875rem", md: "1rem" },
+                        "&:hover": { color: "primary.main" },
+                      }}
+                    >
+                      {isLogin
+                        ? "Don't have an account? Register now"
+                        : "Already registered? Sign in here"}
+                    </MuiLink>
+                  </Box>
                 </Box>
               </Box>
             </Grid>
