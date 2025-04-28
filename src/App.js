@@ -7,6 +7,7 @@ import Dashboard from './components/DashBoard/DashBoard';
 import ProfilePage from './components/ProfilePage/ProfilePage';
 import UsersTable from './components/UsersTable/UsersTable';
 import QRTable from './components/QRTable/QRTable';
+import Detail from './components/Detail/Detail';
 
 const theme = createTheme({
   palette: {
@@ -29,7 +30,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="profile" element={<ProfilePage />} />
             <Route path="users-table" element={<UsersTable />} />
-            <Route path="qr-table/:id" element={<QRTable />} />
+            <Route path="analytic/:id" element={<Detail />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth" replace />} />
         </Routes>

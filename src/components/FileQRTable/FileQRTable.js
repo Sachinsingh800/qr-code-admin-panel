@@ -7,26 +7,23 @@ import {
   IconButton,
   Tooltip,
   Paper,
-  Avatar,
   Chip,
   useTheme,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import {
-  Refresh,
-  Info,
-  AdminPanelSettings,
-  Download,
-} from "@mui/icons-material";
+import { Refresh, Info, Download, PictureAsPdf, Image } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
-import Header from "../Header/Header";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   border: 0,
   "& .MuiDataGrid-columnHeaders": {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
     borderBottom: `2px solid ${theme.palette.divider}`,
     fontSize: "0.875rem",
@@ -61,14 +58,23 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-const UsersTable = () => {
+const FileQRTable = () => {
   const theme = useTheme();
-  const [users, setUsers] = useState([]);
+  const [qrData, setQrData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [contentTypeFilter, setContentTypeFilter] = useState("all");
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const fetchUsers = async () => {
+  const constructApiUrl = () => {
+    const baseUrl = `http://13.203.219.119:3001/admin/user/qr/fileFilter/${id}`;
+    return contentTypeFilter !== "all"
+      ? `${baseUrl}?contentType=${contentTypeFilter}`
+      : baseUrl;
+  };
+
+  const fetchQRData = async () => {
     const token = Cookies.get("adminToken");
     if (!token) {
       navigate("/auth");
@@ -76,46 +82,64 @@ const UsersTable = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://13.203.219.119:3001/admin/user/getAll",
-        {
-          method: "GET",
-          headers: {
-            "x-admin-token": token,
-          },
-        }
-      );
+      setLoading(true);
+      const response = await fetch(constructApiUrl(), {
+        method: "GET",
+        headers: {
+          "x-admin-token": token,
+        },
+      });
 
-      if (!response.ok)
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
-      if (data.message && Array.isArray(data.message)) {
-        setUsers(data.message);
+      if (data.data && Array.isArray(data.data)) {
+        setQrData(data.data);
       } else {
         throw new Error("Invalid data format received");
       }
     } catch (err) {
-      setError(err.message || "Failed to fetch users");
+      setError(err.message || "Failed to fetch QR data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchQRData();
+  }, [contentTypeFilter]);
+
+  const handleDownloadContent = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = url.split("/").pop();
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+      setError("Failed to download file. Please try again.");
+    }
+  };
 
   const handleExportCSV = () => {
-    if (users.length === 0) return;
+    if (qrData.length === 0) return;
 
     const csvContent = [
-      ["Name", "Email", "Role", "Joined Date"],
-      ...users.map((user) => [
-        `"${user.name.replace(/"/g, '""')}"`,
-        `"${user.email.replace(/"/g, '""')}"`,
-        user.role,
-        new Date(user.createdAt).toLocaleDateString("en-IN", {
+      ["Purpose", "Content Type", "Uploaded File", "QR Code", "Created At"],
+      ...qrData.map((item) => [
+        `"${item.purpose.replace(/"/g, '""')}"`,
+        item.contentType,
+        item.uploadedFile.url,
+        item.file.url,
+        new Date(item.createdAt).toLocaleDateString("en-IN", {
           day: "2-digit",
           month: "short",
           year: "numeric",
@@ -128,7 +152,7 @@ const UsersTable = () => {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "users.csv";
+    link.download = "file_qr_data.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -136,89 +160,70 @@ const UsersTable = () => {
 
   const columns = [
     {
-      field: "name",
-      headerName: "Name",
+      field: "purpose",
+      headerName: "Purpose",
       flex: 1,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <Avatar
-            sx={{
-              bgcolor: theme.palette.secondary.main,
-              width: 34,
-              height: 34,
-              fontSize: "0.875rem",
-              fontWeight: 600,
-            }}
-          >
-            {params.row.name[0].toUpperCase()}
-          </Avatar>
-          <Typography variant="body2" fontWeight="medium">
-            {params.row.name}
-          </Typography>
-        </Box>
+        <Typography variant="body2" fontWeight="medium">
+          {params.value || "N/A"}
+        </Typography>
       ),
     },
     {
-      field: "email",
-      headerName: "Email",
-      flex: 1.5,
-      renderCell: (params) => (
-        <Tooltip title={params.value} placement="top">
-          <Typography
-            variant="body2"
-            noWrap
-            sx={{
-              fontFamily: "monospace",
-              color: "text.secondary",
-              letterSpacing: 0.5,
-            }}
-          >
-            {params.value}
-          </Typography>
-        </Tooltip>
-      ),
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 120,
+      field: "contentType",
+      headerName: "Content Type",
+      width: 150,
       renderCell: (params) => (
         <Chip
-          label={params.value}
-          color={params.value === "admin" ? "secondary" : "default"}
+          label={params.value.toUpperCase()}
+          color={params.value === "pdf" ? "primary" : "secondary"}
           size="small"
           icon={
-            params.value === "admin" && <AdminPanelSettings fontSize="small" />
+            params.value === "pdf" ? (
+              <PictureAsPdf fontSize="small" />
+            ) : (
+              <Image fontSize="small" />
+            )
           }
           sx={{
-            textTransform: "capitalize",
             borderRadius: "6px",
             fontWeight: 600,
-            width: 80,
+            width: 90,
           }}
         />
       ),
     },
     {
-      field: "createdAt",
-      headerName: "Joined Date",
-      width: 150,
-      renderCell: (params) =>
-        new Date(params.value).toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
+      field: "uploadedFile.url",
+      headerName: "Uploaded File",
+      flex: 2,
+      renderCell: (params) => (
+        <Tooltip title="Download File">
+          <Typography
+            variant="body2"
+            sx={{
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+            onClick={() => handleDownloadContent(params.row.uploadedFile.url)}
+          >
+            Download {params.row.contentType.toUpperCase()}
+          </Typography>
+        </Tooltip>
+      ),
     },
     {
-      field: "_id",
-      headerName: "Actions",
+      field: "file.url",
+      headerName: "QR Code",
       width: 120,
       renderCell: (params) => (
-        <Tooltip title="View details">
+        <Tooltip title="Download QR Code">
           <IconButton
             size="small"
-            onClick={() => handleViewDetails(params.value)}
+            onClick={() => handleDownloadContent(params.row.file.url)}
             sx={{
               "&:hover": {
                 backgroundColor: "action.hover",
@@ -227,21 +232,27 @@ const UsersTable = () => {
               transition: "transform 0.2s ease",
             }}
           >
-            <Info fontSize="small" color="primary" />
+            <Download fontSize="small" color="primary" />
           </IconButton>
         </Tooltip>
       ),
     },
+    {
+      field: "createdAt",
+      headerName: "Created Date",
+      width: 150,
+      renderCell: (params) =>
+        new Date(params.value).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+    },
   ];
 
   const handleRefresh = () => {
-    setLoading(true);
     setError(null);
-    fetchUsers();
-  };
-
-  const handleViewDetails = (userId) => {
-    navigate(`/dashboard/analytic/${userId}`);
+    fetchQRData();
   };
 
   if (error) {
@@ -294,18 +305,34 @@ const UsersTable = () => {
       >
         <Box>
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            User Management
+            File QR Management
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {users.length} registered users • Last updated{" "}
+            {qrData.length} File QR entries • Last updated{" "}
             {new Date().toLocaleTimeString()}
           </Typography>
         </Box>
-        <Box>
+        <Box style={{ display: "flex" }}>
+          <Box sx={{ p: 2, display: "flex", alignItems: "center", gap: 2 }}>
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>File Type</InputLabel>
+              <Select
+                value={contentTypeFilter}
+                label="File Type"
+                onChange={(e) => setContentTypeFilter(e.target.value)}
+              >
+                <MenuItem value="all">All</MenuItem>
+                <MenuItem value="pdf">PDF</MenuItem>
+                <MenuItem value="image">Image</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
           <Tooltip title="Export to CSV">
             <IconButton
               onClick={handleExportCSV}
               sx={{
+                minWidth: 80,
+                height: 50,
                 backgroundColor: "action.selected",
                 "&:hover": {
                   backgroundColor: "action.hover",
@@ -323,6 +350,8 @@ const UsersTable = () => {
               onClick={handleRefresh}
               disabled={loading}
               sx={{
+                minWidth: 80,
+                height: 50,
                 backgroundColor: "action.selected",
                 "&:hover": {
                   backgroundColor: "action.hover",
@@ -339,28 +368,11 @@ const UsersTable = () => {
 
       <Box sx={{ flex: 1, position: "relative", minHeight: 400 }}>
         <StyledDataGrid
-          rows={users}
+          rows={qrData}
           columns={columns}
           loading={loading}
           disableSelectionOnClick
           getRowId={(row) => row._id}
-          components={{
-            LoadingOverlay: LinearProgress,
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 300 },
-              sx: {
-                "& .MuiTextField-root": {
-                  borderColor: "divider",
-                  borderRadius: 2,
-                  background: theme.palette.background.default,
-                },
-              },
-            },
-          }}
           initialState={{
             pagination: {
               pageSize: 10,
@@ -374,10 +386,14 @@ const UsersTable = () => {
               overflow: "auto",
             },
           }}
+          components={{
+            LoadingOverlay: LinearProgress,
+            Toolbar: GridToolbar,
+          }}
         />
       </Box>
     </Paper>
   );
 };
 
-export default UsersTable;
+export default FileQRTable;

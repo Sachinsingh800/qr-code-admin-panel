@@ -44,39 +44,6 @@ const Dashboard = () => {
   const menuItems = [
     { label: "Home", icon: <HomeIcon />, path: "/dashboard/home" },
     { label: "Users", icon: <SchoolIcon />, path: "/dashboard/users-table" },
-    { label: "Tests", icon: <ChecklistRtlIcon />, path: "/dashboard/tests" },
-    {
-      label: "Tuition",
-      icon: <BusinessIcon />,
-      path: "/dashboard/tution-form",
-    },
-    { label: "Material", icon: <FlashOnIcon />, path: "/dashboard/material" },
-    {
-      label: "Toppers",
-      icon: <SupervisedUserCircleIcon />,
-      path: "/dashboard/toppers",
-    },
-    { divider: true },
-    {
-      label: "For Sub Admin",
-      icon: <GroupsIcon />,
-      path: "/dashboard/sub-admin",
-    },
-    {
-      label: "Contact Us",
-      icon: <ContactsIcon />,
-      // path: "/dashboard/contact"
-    },
-    {
-      label: "About Us",
-      icon: <InfoIcon />,
-      // path: "/dashboard/about"
-    },
-    {
-      label: "Refer & Earn",
-      icon: <ShareIcon />,
-      // path: "/dashboard/refer"
-    },
   ];
 
   const handleLogout = () => {
@@ -95,7 +62,7 @@ const Dashboard = () => {
           color: "#1976d2",
         }}
       >
-        <span style={{ color: "red" }}>Z</span> Batch
+        qrScanner and Generator
       </Typography>
       <Divider />
       <List>
@@ -191,7 +158,7 @@ const Dashboard = () => {
             }}
           >
             <Typography variant="body1" sx={{ fontWeight: "500" }}>
-              Student Name
+              Admin
             </Typography>
             <Avatar
               alt="User Avatar"
