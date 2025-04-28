@@ -143,7 +143,7 @@ const Dashboard = () => {
             </IconButton>
           )}
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: "bold" }}>
-            <span style={{ color: "red" }}>Z</span> online
+            qrScanner and Generator
           </Typography>
           <IconButton
             onClick={handleAvatarClick}
