@@ -368,7 +368,7 @@ const AuthPage = () => {
                     </Button>
                   </Box>
 
-                  <Box sx={{ mt: 3, textAlign: "center" }}>
+                  {/* <Box sx={{ mt: 3, textAlign: "center" }}>
                     <MuiLink
                       component="button"
                       type="button"
@@ -383,7 +383,7 @@ const AuthPage = () => {
                         ? "Don't have an account? Register now"
                         : "Already registered? Sign in here"}
                     </MuiLink>
-                  </Box>
+                  </Box> */}
                 </Box>
               </Box>
             </Grid>
