@@ -77,7 +77,7 @@ const UsersTable = () => {
 
     try {
       const response = await fetch(
-        "http://13.203.219.119:3001/admin/user/getAll",
+        "https://qrcodescannerandgenerator.onrender.com/admin/user/getAll",
         {
           method: "GET",
           headers: {

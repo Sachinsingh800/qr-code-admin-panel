@@ -126,7 +126,7 @@ const AuthPage = () => {
     setLoading(true);
 
     try {
-      const url = `http://13.203.219.119:3001/admin/${
+      const url = `https://qrcodescannerandgenerator.onrender.com/admin/${
         isLogin ? "logIn" : "register"
       }`;
       const { data } = await axios.post(url, formData);

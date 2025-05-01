@@ -56,7 +56,7 @@ const ProfilePage = () => {
         }
 
         const { data } = await axios.get(
-          "http://13.203.219.119:3001/admin/get",
+          "https://qrcodescannerandgenerator.onrender.com/admin/get",
           {
             headers: {
               "x-admin-token": token, // Fixed header format

@@ -68,7 +68,7 @@ const FileQRTable = () => {
   const { id } = useParams();
 
   const constructApiUrl = () => {
-    const baseUrl = `http://13.203.219.119:3001/admin/user/qr/fileFilter/${id}`;
+    const baseUrl = `https://qrcodescannerandgenerator.onrender.com/admin/user/qr/fileFilter/${id}`;
     return contentTypeFilter !== "all"
       ? `${baseUrl}?contentType=${contentTypeFilter}`
       : baseUrl;
