@@ -150,7 +150,7 @@ const UsersTable = () => {
               fontWeight: 600,
             }}
           >
-            {params.row.name[0].toUpperCase()}
+            {params?.row?.name[0]?.toUpperCase()}
           </Avatar>
           <Typography variant="body2" fontWeight="medium">
             {params.row.name}

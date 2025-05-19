@@ -236,7 +236,7 @@ const QRTable = () => {
                 }}
               >
                 {isDocument
-                  ? `Download ${params.value.split(".").pop().toUpperCase()}`
+                  ? `Download ${params?.value?.split(".")?.pop()?.toUpperCase()}`
                   : params.value}
               </Typography>
             </Tooltip>
